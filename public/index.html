@@ -231,8 +231,17 @@
       text-decoration: none;
       font-weight: 400;
       transition: color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
     .card-footer a:hover { color: var(--accent-dark); text-decoration: underline; }
+
+    .x-icon {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
 
     .card-footer .official-link::before {
       content: "🔗 ";
@@ -449,7 +458,12 @@
         xLink.href = `https://x.com/${handle}`;
         xLink.target = "_blank";
         xLink.rel = "noopener noreferrer";
-        xLink.textContent = `@${handle}`;
+        const icon = document.createElement("img");
+        icon.src = "/Twitter-X.svg";
+        icon.alt = "X";
+        icon.className = "x-icon";
+        xLink.appendChild(icon);
+        xLink.appendChild(document.createTextNode(`@${handle}`));
         footer.appendChild(xLink);
       }
 
