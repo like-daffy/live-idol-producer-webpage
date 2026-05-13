@@ -73,13 +73,13 @@ Hybrid
 Overseas
 ```
 
-### TSV URL format
+### TSV URL (published)
 
 ```
-https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/export?format=tsv&gid=0
+https://docs.google.com/spreadsheets/d/e/2PACX-1vQJ8sJFqWDWb5kQsEVkSfeLr-NgsWpbxPR4Wxe-bTpCQeXtignl4qDiEy7azvFbVJ9w9cA8pLzW4au3/pub?gid=1615162975&single=true&output=tsv
 ```
 
-Use TSV (tab-separated) — not CSV — to safely handle commas in comments.
+Generated via **File → Share → Publish to web → Tab-separated values**. Use this form, not the `/export?format=tsv` URL — the published URL works without authentication.
 
 ---
 
