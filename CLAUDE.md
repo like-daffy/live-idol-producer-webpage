@@ -61,7 +61,8 @@ live-idol-producer-webpage/
 | C | `contactX` | X (Twitter) handle e.g. `@username` |
 | D | `mainGenre` | Main music genre (may be Korean/Japanese) |
 | E | `idolName` | Idol unit name — may be empty; may be Korean/Japanese |
-| F | `comment` | Free text — may contain commas, Korean, or Japanese |
+| F | `officialPage` | Full URL to official site — may be empty; rendered as clickable link |
+| G | `comment` | Free text — may contain commas, Korean, or Japanese |
 
 ### Category Values (exact spelling required in Sheet)
 

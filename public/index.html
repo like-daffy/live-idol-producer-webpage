@@ -117,8 +117,8 @@
     /* ── Card Grid ── */
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
 
     /* ── Producer Card ── */
@@ -126,16 +126,31 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 20px;
+      padding: 20px 24px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      flex-direction: row;
+      gap: 24px;
       transition: box-shadow 0.2s ease, border-color 0.2s ease;
     }
     .card:hover {
       box-shadow: 0 4px 16px rgba(0, 229, 255, 0.12);
       border-color: var(--accent);
+    }
+
+    .card-left {
+      flex: 0 0 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
     }
 
     .card-genre {
@@ -162,7 +177,6 @@
       font-size: 0.85rem;
       font-weight: 300;
       color: var(--text-secondary);
-      margin-top: -4px;
     }
 
     .card-comment {
@@ -175,8 +189,12 @@
 
     .card-footer {
       margin-top: auto;
-      padding-top: 8px;
+      padding-top: 10px;
       border-top: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
     }
 
     .card-footer a {
@@ -188,12 +206,18 @@
     }
     .card-footer a:hover { color: var(--accent-dark); text-decoration: underline; }
 
+    .card-footer .official-link::before {
+      content: "🔗 ";
+      font-style: normal;
+    }
+
     /* ── Mobile ── */
     @media (max-width: 640px) {
       .gnb-inner { padding: 0 16px; gap: 16px; }
       main { padding: 0 16px 60px; }
-      .card-grid { grid-template-columns: 1fr; }
       .category-section { padding: 48px 0 0; }
+      .card { flex-direction: column; gap: 12px; }
+      .card-left { flex: none; }
     }
   </style>
 </head>
@@ -245,12 +269,13 @@
       .map(row => {
         const cols = row.split("\t").map(c => c.trim());
         return {
-          category:  cols[0] || "",
-          name:      cols[1] || "",
-          contactX:  cols[2] || "",
-          mainGenre: cols[3] || "",
-          idolName:  cols[4] || "",
-          comment:   cols[5] || ""
+          category:     cols[0] || "",
+          name:         cols[1] || "",
+          contactX:     cols[2] || "",
+          mainGenre:    cols[3] || "",
+          idolName:     cols[4] || "",
+          officialPage: cols[5] || "",
+          comment:      cols[6] || ""
         };
       })
       .filter(p => p.name);
@@ -271,45 +296,74 @@
     const card = document.createElement("div");
     card.className = "card";
 
+    // Left column: genre badge, name, idol name
+    const left = document.createElement("div");
+    left.className = "card-left";
+
     if (p.mainGenre) {
       const badge = document.createElement("span");
       badge.className = "card-genre";
       badge.textContent = p.mainGenre;
-      card.appendChild(badge);
+      left.appendChild(badge);
     }
 
     const name = document.createElement("h3");
     name.className = "card-name";
     name.textContent = p.name;
-    card.appendChild(name);
+    left.appendChild(name);
 
     if (p.idolName) {
       const idol = document.createElement("div");
       idol.className = "card-idol";
       idol.textContent = p.idolName;
-      card.appendChild(idol);
+      left.appendChild(idol);
     }
+
+    card.appendChild(left);
+
+    // Right column: comment, footer links
+    const right = document.createElement("div");
+    right.className = "card-right";
 
     if (p.comment) {
       const comment = document.createElement("p");
       comment.className = "card-comment";
       comment.textContent = p.comment;
-      card.appendChild(comment);
+      right.appendChild(comment);
     }
 
-    if (p.contactX) {
+    if (p.contactX || p.officialPage) {
       const footer = document.createElement("div");
       footer.className = "card-footer";
-      const handle = xHandle(p.contactX);
-      const link = document.createElement("a");
-      link.href = `https://x.com/${handle}`;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = `@${handle}`;
-      footer.appendChild(link);
-      card.appendChild(footer);
+
+      if (p.contactX) {
+        const handle = xHandle(p.contactX);
+        const xLink = document.createElement("a");
+        xLink.href = `https://x.com/${handle}`;
+        xLink.target = "_blank";
+        xLink.rel = "noopener noreferrer";
+        xLink.textContent = `@${handle}`;
+        footer.appendChild(xLink);
+      }
+
+      if (p.officialPage) {
+        const oLink = document.createElement("a");
+        oLink.href = p.officialPage;
+        oLink.target = "_blank";
+        oLink.rel = "noopener noreferrer";
+        oLink.className = "official-link";
+        try {
+          oLink.textContent = new URL(p.officialPage).hostname.replace(/^www\./, "");
+        } catch {
+          oLink.textContent = p.officialPage;
+        }
+        footer.appendChild(oLink);
+      }
+
+      right.appendChild(footer);
     }
 
+    card.appendChild(right);
     return card;
   }
 
