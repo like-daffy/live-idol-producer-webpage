@@ -211,6 +211,45 @@
       font-style: normal;
     }
 
+    /* ── Footer ── */
+    footer {
+      margin-top: 80px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .disclaimer {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .disclaimer + .disclaimer {
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .disclaimer-lang {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--accent-dark);
+      background: rgba(0, 229, 255, 0.1);
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+
     /* ── Mobile ── */
     @media (max-width: 640px) {
       .gnb-inner { padding: 0 16px; gap: 16px; }
@@ -218,6 +257,7 @@
       .category-section { padding: 48px 0 0; }
       .card { flex-direction: column; gap: 12px; }
       .card-left { flex: none; }
+      .footer-inner { padding: 24px 16px; }
     }
   </style>
 </head>
@@ -431,6 +471,22 @@
     }
   })();
 </script>
+
+
+<footer>
+  <div class="footer-inner">
+    <div class="disclaimer">
+      <span class="disclaimer-lang">KR</span><br>
+      본 사이트는 프로듀서 목록만 제공하며, 의뢰·작업·소통 관련 모든 책임은 당사자 간에 있습니다.<br>
+      각 프로듀서의 최신 활동 및 소통 스타일은 X 프로필을 직접 확인해주세요.
+    </div>
+    <div class="disclaimer">
+      <span class="disclaimer-lang">JP</span><br>
+      本サイトはプロデューサーリストの提供のみを目的としており、依頼・作業・やり取りに関する一切の責任は当事者間にあります。<br>
+      各プロデューサーの最新活動およびコミュニケーションスタイルは、Xのプロフィールより直接ご確認ください。
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
