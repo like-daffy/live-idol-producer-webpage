@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chika Idol Producer Directory</title>
+  <title>라이브아이돌 프로듀서 디렉토리</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -265,13 +265,13 @@
 
 <header>
   <div class="gnb-inner">
-    <a class="gnb-brand" href="#">Chika Idol Producers</a>
+    <a class="gnb-brand" href="#">라이브아이돌 프로듀서</a>
     <nav id="gnb-nav">
-      <a href="#find-actively" data-section="find-actively">Find actively</a>
-      <a href="#chika-idol-active" data-section="chika-idol-active">Chika Idol Active</a>
-      <a href="#subculture" data-section="subculture">Subculture</a>
-      <a href="#hybrid" data-section="hybrid">Hybrid</a>
-      <a href="#overseas" data-section="overseas">Overseas</a>
+      <a href="#find-actively" data-section="find-actively">적극 기회 구하는 프로듀서</a>
+      <a href="#chika-idol-active" data-section="chika-idol-active">현업 라이브아이돌 활동 프로듀서</a>
+      <a href="#subculture" data-section="subculture">서브컬처에서 활동중인 프로듀서</a>
+      <a href="#hybrid" data-section="hybrid">K-pop 혹은 Indie 장르와 겸하여 작업하는 프로듀서</a>
+      <a href="#overseas" data-section="overseas">해외 프로듀서</a>
     </nav>
   </div>
 </header>
@@ -297,6 +297,14 @@
     "Subculture":        "subculture",
     "Hybrid":            "hybrid",
     "Overseas":          "overseas"
+  };
+
+  const CATEGORY_LABELS = {
+    "Find actively":     "적극 기회 구하는 프로듀서",
+    "Chika Idol Active": "현업 라이브아이돌 활동 프로듀서",
+    "Subculture":        "서브컬처에서 활동중인 프로듀서",
+    "Hybrid":            "K-pop 혹은 Indie 장르와 겸하여 작업하는 프로듀서",
+    "Overseas":          "해외 프로듀서"
   };
 
   async function fetchProducers() {
@@ -422,7 +430,7 @@
       section.id = SECTION_IDS[cat];
 
       const heading = document.createElement("h2");
-      heading.textContent = cat;
+      heading.textContent = CATEGORY_LABELS[cat] || cat;
       section.appendChild(heading);
 
       const grid = document.createElement("div");
