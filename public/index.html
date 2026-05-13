@@ -187,6 +187,33 @@
       white-space: pre-wrap;
     }
 
+    .card-tracks {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-track {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .card-track::before {
+      content: "♪";
+      color: var(--accent-dark);
+      flex-shrink: 0;
+    }
+
+    .card-track a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .card-track a:hover { color: var(--accent-dark); text-decoration: underline; }
+
     .card-footer {
       margin-top: auto;
       padding-top: 10px;
@@ -323,7 +350,11 @@
           mainGenre:    cols[3] || "",
           idolName:     cols[4] || "",
           officialPage: cols[5] || "",
-          comment:      cols[6] || ""
+          track1:       cols[6] || "",
+          track1Link:   cols[7] || "",
+          track2:       cols[8] || "",
+          track2Link:   cols[9] || "",
+          comment:      cols[10] || ""
         };
       })
       .filter(p => p.name);
@@ -378,6 +409,32 @@
       comment.className = "card-comment";
       comment.textContent = p.comment;
       right.appendChild(comment);
+    }
+
+    const tracks = [
+      { title: p.track1, link: p.track1Link },
+      { title: p.track2, link: p.track2Link }
+    ].filter(t => t.title);
+
+    if (tracks.length) {
+      const tracksEl = document.createElement("div");
+      tracksEl.className = "card-tracks";
+      tracks.forEach(t => {
+        const row = document.createElement("div");
+        row.className = "card-track";
+        if (t.link) {
+          const a = document.createElement("a");
+          a.href = t.link;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = t.title;
+          row.appendChild(a);
+        } else {
+          row.appendChild(document.createTextNode(t.title));
+        }
+        tracksEl.appendChild(row);
+      });
+      right.appendChild(tracksEl);
     }
 
     if (p.contactX || p.officialPage) {

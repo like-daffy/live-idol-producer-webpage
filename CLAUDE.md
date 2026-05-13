@@ -62,7 +62,11 @@ live-idol-producer-webpage/
 | D | `mainGenre` | Main music genre (may be Korean/Japanese) |
 | E | `idolName` | Idol unit name — may be empty; may be Korean/Japanese |
 | F | `officialPage` | Full URL to official site — may be empty; rendered as clickable link |
-| G | `comment` | Free text — may contain commas, Korean, or Japanese |
+| G | `track1` | Representative track title — hidden if empty |
+| H | `track1Link` | URL for track1 — if empty, title shown as plain text; if set, shown as link |
+| I | `track2` | Second representative track title — hidden if empty |
+| J | `track2Link` | URL for track2 — same rules as track1Link |
+| K | `comment` | Free text — may contain commas, Korean, or Japanese |
 
 ### Category Values (exact spelling required in Sheet)
 
