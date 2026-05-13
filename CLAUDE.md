@@ -185,9 +185,44 @@ index.html
 
 ---
 
-## Design Direction
+## Design Spec
 
-Dark editorial aesthetic inspired by Japanese underground music culture. Monochrome base with a single accent color (neon pink or electric blue). Clean sans-serif typography with CJK font support. Subtle card borders. Mobile-first responsive layout.
+### Mood
+Clean, minimal, modern. White base with plenty of whitespace. Inspired by contemporary K-Pop agency sites — polished and approachable, not dark or grungy.
+
+### Colors
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--bg` | `#ffffff` | Page background |
+| `--surface` | `#f8f9fa` | Card background |
+| `--border` | `#e9ecef` | Card border, dividers |
+| `--text-primary` | `#1a1a2e` | Headings, names |
+| `--text-secondary` | `#6c757d` | Subtitles, metadata |
+| `--accent` | `#00e5ff` | Active GNB link, badge background, hover states |
+| `--accent-dark` | `#00b8cc` | Accent hover/pressed |
+| `--link` | `#00b8cc` | contactX link color |
+
+### Typography
+- **Font import**: `https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap`
+- **Font stack**: `'Noto Sans KR', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif`
+- **Page title / GNB brand**: `700`, `1.1rem`
+- **Section headings**: `700`, `1.4rem`, `--text-primary`
+- **Card producer name (h3)**: `500`, `1rem`
+- **Card idol name**: `300`, `0.85rem`, `--text-secondary`
+- **Comment body**: `400`, `0.875rem`, line-height `1.6`
+- **Genre badge**: `500`, `0.7rem`, uppercase, letter-spacing `0.05em`
+
+### Layout
+- **GNB**: sticky top, white background, `border-bottom: 1px solid var(--border)`, height `56px`
+- **Max content width**: `1100px`, centered
+- **Section padding**: `64px 0`
+- **Card grid**: `repeat(auto-fill, minmax(280px, 1fr))`, gap `20px`
+- **Card**: `border-radius: 12px`, `border: 1px solid var(--border)`, `box-shadow: 0 2px 8px rgba(0,0,0,0.04)`, padding `20px`
+- **Card hover**: `box-shadow: 0 4px 16px rgba(0,229,255,0.12)`, `border-color: var(--accent)`, transition `0.2s ease`
+- **Genre badge**: `background: rgba(0,229,255,0.12)`, `color: var(--accent-dark)`, `border-radius: 4px`, `padding: 2px 8px`
+
+### Mobile breakpoint
+At `≤ 640px`: single-column grid, GNB collapses to horizontal scroll.
 
 ---
 

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chika Idol Producer Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f8f9fa;
+      --border: #e9ecef;
+      --text-primary: #1a1a2e;
+      --text-secondary: #6c757d;
+      --accent: #00e5ff;
+      --accent-dark: #00b8cc;
+      --link: #00b8cc;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── GNB ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      height: 56px;
+    }
+
+    .gnb-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .gnb-brand {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    nav::-webkit-scrollbar { display: none; }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 400;
+      padding: 6px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: color 0.15s, background 0.15s;
+    }
+    nav a:hover { color: var(--text-primary); background: var(--surface); }
+    nav a.active {
+      color: var(--accent-dark);
+      font-weight: 500;
+      background: rgba(0, 229, 255, 0.1);
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Loading / Error ── */
+    #loading {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* ── Sections ── */
+    .category-section {
+      padding: 64px 0 0;
+    }
+
+    .category-section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    /* ── Card Grid ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── Producer Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(0, 229, 255, 0.12);
+      border-color: var(--accent);
+    }
+
+    .card-genre {
+      display: inline-block;
+      background: rgba(0, 229, 255, 0.12);
+      color: var(--accent-dark);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      align-self: flex-start;
+    }
+
+    .card-name {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .card-idol {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      margin-top: -4px;
+    }
+
+    .card-comment {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      flex: 1;
+      white-space: pre-wrap;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-footer a {
+      color: var(--link);
+      font-size: 0.825rem;
+      text-decoration: none;
+      font-weight: 400;
+      transition: color 0.15s;
+    }
+    .card-footer a:hover { color: var(--accent-dark); text-decoration: underline; }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .gnb-inner { padding: 0 16px; gap: 16px; }
+      main { padding: 0 16px 60px; }
+      .card-grid { grid-template-columns: 1fr; }
+      .category-section { padding: 48px 0 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="gnb-inner">
+    <a class="gnb-brand" href="#">Chika Idol Producers</a>
+    <nav id="gnb-nav">
+      <a href="#find-actively" data-section="find-actively">Find actively</a>
+      <a href="#chika-idol-active" data-section="chika-idol-active">Chika Idol Active</a>
+      <a href="#subculture" data-section="subculture">Subculture</a>
+      <a href="#hybrid" data-section="hybrid">Hybrid</a>
+      <a href="#overseas" data-section="overseas">Overseas</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div id="loading">Loading producers…</div>
+</main>
+
+<script>
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/1fYYGT9Y4mjm_U5_popmqVIWhixAmxCQ7dJI0Tgt4A7o/export?format=tsv&gid=0";
+
+  const CATEGORY_ORDER = [
+    "Find actively",
+    "Chika Idol Active",
+    "Subculture",
+    "Hybrid",
+    "Overseas"
+  ];
+
+  const SECTION_IDS = {
+    "Find actively":     "find-actively",
+    "Chika Idol Active": "chika-idol-active",
+    "Subculture":        "subculture",
+    "Hybrid":            "hybrid",
+    "Overseas":          "overseas"
+  };
+
+  async function fetchProducers() {
+    const res = await fetch(SHEET_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const tsv = await res.text();
+    const [, ...rows] = tsv.trim().split("\n");
+
+    const producers = rows
+      .map(row => {
+        const cols = row.split("\t").map(c => c.trim());
+        return {
+          category:  cols[0] || "",
+          name:      cols[1] || "",
+          contactX:  cols[2] || "",
+          mainGenre: cols[3] || "",
+          idolName:  cols[4] || "",
+          comment:   cols[5] || ""
+        };
+      })
+      .filter(p => p.name);
+
+    const grouped = {};
+    CATEGORY_ORDER.forEach(cat => {
+      grouped[cat] = producers.filter(p => p.category === cat);
+    });
+    return grouped;
+  }
+
+  function xHandle(raw) {
+    // strip leading @ or full-width ＠
+    return raw.replace(/^[@＠]/, "");
+  }
+
+  function buildCard(p) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    if (p.mainGenre) {
+      const badge = document.createElement("span");
+      badge.className = "card-genre";
+      badge.textContent = p.mainGenre;
+      card.appendChild(badge);
+    }
+
+    const name = document.createElement("h3");
+    name.className = "card-name";
+    name.textContent = p.name;
+    card.appendChild(name);
+
+    if (p.idolName) {
+      const idol = document.createElement("div");
+      idol.className = "card-idol";
+      idol.textContent = p.idolName;
+      card.appendChild(idol);
+    }
+
+    if (p.comment) {
+      const comment = document.createElement("p");
+      comment.className = "card-comment";
+      comment.textContent = p.comment;
+      card.appendChild(comment);
+    }
+
+    if (p.contactX) {
+      const footer = document.createElement("div");
+      footer.className = "card-footer";
+      const handle = xHandle(p.contactX);
+      const link = document.createElement("a");
+      link.href = `https://x.com/${handle}`;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = `@${handle}`;
+      footer.appendChild(link);
+      card.appendChild(footer);
+    }
+
+    return card;
+  }
+
+  function renderPage(grouped) {
+    const main = document.querySelector("main");
+    main.innerHTML = "";
+
+    const sections = [];
+
+    CATEGORY_ORDER.forEach(cat => {
+      const items = grouped[cat] || [];
+      if (!items.length) return;
+
+      const section = document.createElement("section");
+      section.className = "category-section";
+      section.id = SECTION_IDS[cat];
+
+      const heading = document.createElement("h2");
+      heading.textContent = cat;
+      section.appendChild(heading);
+
+      const grid = document.createElement("div");
+      grid.className = "card-grid";
+      items.forEach(p => grid.appendChild(buildCard(p)));
+      section.appendChild(grid);
+
+      main.appendChild(section);
+      sections.push(section);
+    });
+
+    setupIntersectionObserver(sections);
+  }
+
+  function setupIntersectionObserver(sections) {
+    const navLinks = document.querySelectorAll("#gnb-nav a[data-section]");
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(a => {
+            a.classList.toggle("active", a.dataset.section === entry.target.id);
+          });
+        }
+      });
+    }, { rootMargin: "-30% 0px -60% 0px", threshold: 0 });
+
+    sections.forEach(s => observer.observe(s));
+
+    navLinks.forEach(a => {
+      a.addEventListener("click", e => {
+        e.preventDefault();
+        const target = document.getElementById(a.dataset.section);
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      });
+    });
+  }
+
+  (async () => {
+    try {
+      const data = await fetchProducers();
+      renderPage(data);
+    } catch (err) {
+      document.getElementById("loading").textContent =
+        "データの読み込みに失敗しました。シートが公開されているか確認してください。 / 데이터를 불러오지 못했습니다. 시트가 공개 설정인지 확인하세요。";
+    }
+  })();
+</script>
+
+</body>
+</html>
