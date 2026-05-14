@@ -417,11 +417,12 @@
         const cols = row.split("\t").map(c => c.trim());
         const producerName = cols[0] || "";
         const trackTitle   = cols[1] || "";
-        const trackUrl     = cols[2] || "";
-        const featured     = (cols[3] || "").toUpperCase() === "TRUE";
+        const trackArtist  = cols[2] || "";
+        const trackUrl     = cols[3] || "";
+        const featured     = (cols[4] || "").toUpperCase() === "TRUE";
         if (!producerName || !trackTitle) return;
         if (!map[producerName]) map[producerName] = [];
-        map[producerName].push({ trackTitle, trackUrl, featured });
+        map[producerName].push({ trackTitle, trackArtist, trackUrl, featured });
       });
       return map;
     } catch {
@@ -448,6 +449,9 @@
       row.appendChild(a);
     } else {
       row.appendChild(document.createTextNode(t.trackTitle));
+    }
+    if (t.trackArtist) {
+      row.appendChild(document.createTextNode(` - ${t.trackArtist}`));
     }
     return row;
   }
