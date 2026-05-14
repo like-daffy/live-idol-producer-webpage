@@ -287,6 +287,37 @@
       letter-spacing: 0.04em;
     }
 
+    /* ── Accordion ── */
+    .accordion-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      margin-top: 2px;
+      transition: color 0.15s;
+    }
+    .accordion-btn:hover { color: var(--accent); }
+    .accordion-btn svg {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+    .accordion-btn.open svg { transform: rotate(180deg); }
+
+    .card-tracks-extra {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-tracks-extra.open { display: flex; }
+
     /* ── Mobile ── */
     @media (max-width: 640px) {
       .gnb-brand { display: none; }
@@ -319,7 +350,9 @@
 </main>
 
 <script>
-  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJ8sJFqWDWb5kQsEVkSfeLr-NgsWpbxPR4Wxe-bTpCQeXtignl4qDiEy7azvFbVJ9w9cA8pLzW4au3/pub?gid=1615162975&single=true&output=tsv";
+  const SHEET_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJ8sJFqWDWb5kQsEVkSfeLr-NgsWpbxPR4Wxe-bTpCQeXtignl4qDiEy7azvFbVJ9w9cA8pLzW4au3/pub?gid=1615162975&single=true&output=tsv";
+  // Replace YOUR_TRACKS_GID with the gid of the tracks tab (File → Share → Publish to web → tracks sheet → Tab-separated values)
+  const TRACKS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJ8sJFqWDWb5kQsEVkSfeLr-NgsWpbxPR4Wxe-bTpCQeXtignl4qDiEy7azvFbVJ9w9cA8pLzW4au3/pub?gid=YOUR_TRACKS_GID&single=true&output=tsv";
 
   const CATEGORY_ORDER = [
     "Find actively",
@@ -361,11 +394,7 @@
           mainGenre:    cols[3] || "",
           idolName:     cols[4] || "",
           officialPage: cols[5] || "",
-          track1:       cols[6] || "",
-          track1Link:   cols[7] || "",
-          track2:       cols[8] || "",
-          track2Link:   cols[9] || "",
-          comment:      cols[10] || ""
+          comment:      cols[6] || ""
         };
       })
       .filter(p => p.name);
@@ -377,12 +406,54 @@
     return grouped;
   }
 
+  async function fetchTracks() {
+    if (TRACKS_URL.includes("YOUR_TRACKS_GID")) return {};
+    try {
+      const res = await fetch(TRACKS_URL);
+      if (!res.ok) return {};
+      const tsv = await res.text();
+      const [, ...rows] = tsv.trim().split("\n");
+      const map = {};
+      rows.forEach(row => {
+        const cols = row.split("\t").map(c => c.trim());
+        const producerName = cols[0] || "";
+        const trackTitle   = cols[1] || "";
+        const trackUrl     = cols[2] || "";
+        const featured     = (cols[3] || "").toUpperCase() === "TRUE";
+        if (!producerName || !trackTitle) return;
+        if (!map[producerName]) map[producerName] = [];
+        map[producerName].push({ trackTitle, trackUrl, featured });
+      });
+      return map;
+    } catch {
+      return {};
+    }
+  }
+
   function xHandle(raw) {
     // strip leading @ or full-width ＠
     return raw.replace(/^[@＠]/, "");
   }
 
-  function buildCard(p) {
+  const CHEVRON_SVG = `<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,4 6,8 10,4"/></svg>`;
+
+  function buildTrackRow(t) {
+    const row = document.createElement("div");
+    row.className = "card-track";
+    if (t.trackUrl) {
+      const a = document.createElement("a");
+      a.href = t.trackUrl;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = t.trackTitle;
+      row.appendChild(a);
+    } else {
+      row.appendChild(document.createTextNode(t.trackTitle));
+    }
+    return row;
+  }
+
+  function buildCard(p, tracks) {
     const card = document.createElement("div");
     card.className = "card";
 
@@ -411,7 +482,7 @@
 
     card.appendChild(left);
 
-    // Right column: comment, footer links
+    // Right column: comment, tracks, footer links
     const right = document.createElement("div");
     right.className = "card-right";
 
@@ -422,30 +493,40 @@
       right.appendChild(comment);
     }
 
-    const tracks = [
-      { title: p.track1, link: p.track1Link },
-      { title: p.track2, link: p.track2Link }
-    ].filter(t => t.title);
+    const featured = tracks.filter(t => t.featured);
+    const extra    = tracks.filter(t => !t.featured);
+    const showAccordion = tracks.length >= 3 && extra.length > 0;
 
     if (tracks.length) {
-      const tracksEl = document.createElement("div");
-      tracksEl.className = "card-tracks";
-      tracks.forEach(t => {
-        const row = document.createElement("div");
-        row.className = "card-track";
-        if (t.link) {
-          const a = document.createElement("a");
-          a.href = t.link;
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-          a.textContent = t.title;
-          row.appendChild(a);
-        } else {
-          row.appendChild(document.createTextNode(t.title));
-        }
-        tracksEl.appendChild(row);
-      });
-      right.appendChild(tracksEl);
+      const wrap = document.createElement("div");
+
+      // Featured tracks — always visible
+      const featuredEl = document.createElement("div");
+      featuredEl.className = "card-tracks";
+      featured.forEach(t => featuredEl.appendChild(buildTrackRow(t)));
+      wrap.appendChild(featuredEl);
+
+      if (showAccordion) {
+        // Extra tracks — hidden until expanded
+        const extraEl = document.createElement("div");
+        extraEl.className = "card-tracks-extra";
+        extra.forEach(t => extraEl.appendChild(buildTrackRow(t)));
+        wrap.appendChild(extraEl);
+
+        const btn = document.createElement("button");
+        btn.className = "accordion-btn";
+        btn.innerHTML = `${CHEVRON_SVG}더보기 (+${extra.length}곡)`;
+        btn.addEventListener("click", () => {
+          const isOpen = extraEl.classList.toggle("open");
+          btn.classList.toggle("open", isOpen);
+          btn.innerHTML = isOpen
+            ? `${CHEVRON_SVG}접기`
+            : `${CHEVRON_SVG}더보기 (+${extra.length}곡)`;
+        });
+        wrap.appendChild(btn);
+      }
+
+      right.appendChild(wrap);
     }
 
     if (p.contactX || p.officialPage) {
@@ -488,7 +569,7 @@
     return card;
   }
 
-  function renderPage(grouped) {
+  function renderPage(grouped, trackMap) {
     const main = document.querySelector("main");
     main.innerHTML = "";
 
@@ -508,7 +589,7 @@
 
       const grid = document.createElement("div");
       grid.className = "card-grid";
-      items.forEach(p => grid.appendChild(buildCard(p)));
+      items.forEach(p => grid.appendChild(buildCard(p, trackMap[p.name] || [])));
       section.appendChild(grid);
 
       main.appendChild(section);
@@ -544,8 +625,8 @@
 
   (async () => {
     try {
-      const data = await fetchProducers();
-      renderPage(data);
+      const [data, trackMap] = await Promise.all([fetchProducers(), fetchTracks()]);
+      renderPage(data, trackMap);
     } catch (err) {
       document.getElementById("loading").textContent =
         "データの読み込みに失敗しました。シートが公開されているか確認してください。 / 데이터를 불러오지 못했습니다. 시트가 공개 설정인지 확인하세요。";

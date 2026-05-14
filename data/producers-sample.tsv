@@ -1,12 +1,12 @@
-category	name	contactX	mainGenre	idolName	officialPage	track1	track1Link	track2	track2Link	comment
-Find actively	山田プロデューサー	@yamada_prod	J-Pop	星空アイドル	https://yamada-prod.com	夜明けのメロディ	https://youtu.be/example1	星屑ダンス		地下アイドルシーン10年のベテラン。精力的に新人を発掘中。
-Find actively	김민준	@minjun_idol	K-Indie	루나걸즈		달빛 아래서	https://youtu.be/example2			한국 인디 씬 출신. 독창적인 음악 스타일로 주목받는 중.
-Chika Idol Active	田中たかし	@takashi_chika	Rock	ダークスターズ	https://darkstars.jp	地下鉄道	https://youtu.be/example3	闇夜のロック	https://youtu.be/example4	アンダーグラウンドロックを軸に活動。月2回ライブ開催中。
-Chika Idol Active	이서연	@seoyeon_music	Electronic	네온드림		네온 드림				전자음악 기반의 독특한 세계관. 팬덤 형성 중.
-Chika Idol Active	鈴木エミ	@emi_suzuki_p	Shibuya-kei	カラフルデイズ	https://colorfuldays.jp	カラフルデイズ	https://youtu.be/example5		渋谷系リバイバルをテーマに活動中。ビジュアル面も注目。
-Subculture	佐藤ゲーマー	@sato_gamer_p	Chiptune	ピクセルアイドル		8bitラブ	https://youtu.be/example6	ピクセルダンス	https://youtu.be/example7	ゲーム音楽×アイドルの異色コラボ。コミケ常連。
-Subculture	박지훈	@jihoon_sub	Vocaloid	버추얼스타	https://virtualstar.kr					보컬로이드와 실제 아이돌의 경계를 넘나드는 활동.
-Hybrid	中村ハイブリッド	@nakamura_hb	City Pop / HipHop	ネオシティ		ネオシティナイト	https://youtu.be/example8		シティポップとヒップホップを融合。若い世代に人気急上昇。
-Hybrid	최유진	@yujin_hybrid	Jazz / Idol	재즈아이돌	https://yujin-jazz.com	재즈 나이트		봄날의 재즈	https://youtu.be/example9	재즈 기반 아이돌 음악. 해외 페스티벌 출연 경험 있음.
-Overseas	Jenny Park	@jennypark_idol	K-Pop / J-Pop	PinkWave	https://pinkwave.us	Pink Ocean	https://youtu.be/example10	Wave	https://youtu.be/example11	Korean-American producer bridging K-Pop and J-Pop styles. Based in LA.
-Overseas	Tanaka Ren	@ren_overseas	Electropop	NightBlooms		NightBlooms				Tokyo-born, now based in Berlin. Known for dark electropop productions.
+category	name	contactX	mainGenre	idolName	officialPage	comment
+Find actively	山田プロデューサー	@yamada_prod	J-Pop	星空アイドル	https://yamada-prod.com	地下アイドルシーン10年のベテラン。精力的に新人を発掘中。
+Find actively	김민준	@minjun_idol	K-Indie	루나걸즈		한국 인디 씬 출신. 독창적인 음악 스타일로 주목받는 중.
+Chika Idol Active	田中たかし	@takashi_chika	Rock	ダークスターズ	https://darkstars.jp	アンダーグラウンドロックを軸に活動。月2回ライブ開催中。
+Chika Idol Active	이서연	@seoyeon_music	Electronic	네온드림		전자음악 기반의 독특한 세계관. 팬덤 형성 중.
+Chika Idol Active	鈴木エミ	@emi_suzuki_p	Shibuya-kei	カラフルデイズ	https://colorfuldays.jp	渋谷系リバイバルをテーマに活動中。ビジュアル面も注目。
+Subculture	佐藤ゲーマー	@sato_gamer_p	Chiptune	ピクセルアイドル		ゲーム音楽×アイドルの異色コラボ。コミケ常連。
+Subculture	박지훈	@jihoon_sub	Vocaloid	버추얼스타	https://virtualstar.kr	보컬로이드와 실제 아이돌의 경계를 넘나드는 활동.
+Hybrid	中村ハイブリッド	@nakamura_hb	City Pop / HipHop	ネオシティ		シティポップとヒップホップを融合。若い世代に人気急上昇。
+Hybrid	최유진	@yujin_hybrid	Jazz / Idol	재즈아이돌	https://yujin-jazz.com	재즈 기반 아이돌 음악. 해외 페스티벌 출연 경험 있음.
+Overseas	Jenny Park	@jennypark_idol	K-Pop / J-Pop	PinkWave	https://pinkwave.us	Korean-American producer bridging K-Pop and J-Pop styles. Based in LA.
+Overseas	Tanaka Ren	@ren_overseas	Electropop	NightBlooms		Tokyo-born, now based in Berlin. Known for dark electropop productions.
