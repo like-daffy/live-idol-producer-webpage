@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "PowerShell(New-Item *)",
-      "PowerShell(Move-Item *)"
+      "PowerShell(Move-Item *)",
+      "Bash(rtk git *)"
     ]
   }
 }

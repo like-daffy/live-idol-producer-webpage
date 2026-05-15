@@ -318,6 +318,121 @@
     }
     .card-tracks-extra.open { display: flex; }
 
+    /* ── Search ── */
+    #search-wrap {
+      position: relative;
+      padding: 14px 0 10px;
+    }
+
+    .search-bar-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    #search-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 44px 0 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: var(--surface);
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    #search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.12);
+    }
+    #search-input::placeholder { color: var(--text-secondary); opacity: 1; }
+
+    #search-close {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: color 0.15s, background 0.15s;
+    }
+    #search-close.visible { display: flex; align-items: center; justify-content: center; }
+    #search-close:hover { color: var(--text-primary); background: var(--border); }
+
+    #search-results {
+      display: none;
+      position: absolute;
+      top: calc(100% - 6px);
+      left: 0;
+      right: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      z-index: 95;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    #search-results.active { display: block; }
+
+    .search-result-item {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px;
+      transition: background 0.1s;
+    }
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-item:hover { background: var(--surface); }
+
+    .search-res-producer {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .search-res-sep {
+      color: var(--border);
+      flex-shrink: 0;
+    }
+    .search-res-track { color: var(--text-secondary); }
+    .search-res-track a {
+      color: var(--link);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .search-res-track a:hover { color: var(--accent-dark); text-decoration: underline; }
+    .search-res-artist {
+      color: var(--text-secondary);
+      font-size: 0.825rem;
+    }
+
+    .search-no-results {
+      padding: 20px 16px;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    #search-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 85;
+    }
+    #search-overlay.active { display: block; }
+
     /* ── Mobile ── */
     @media (max-width: 640px) {
       .gnb-brand { display: none; }
@@ -346,6 +461,13 @@
 </header>
 
 <main>
+  <div id="search-wrap">
+    <div class="search-bar-row">
+      <input id="search-input" type="search" placeholder="프로듀서명, 곡명, 아티스트명으로 검색… / プロデューサー名・曲名・アーティスト名で検索…" autocomplete="off" spellcheck="false">
+      <button id="search-close" type="button" aria-label="검색 닫기">✕</button>
+    </div>
+    <div id="search-results"></div>
+  </div>
   <div id="loading">Loading producers…</div>
 </main>
 
@@ -415,14 +537,16 @@
       const map = {};
       rows.forEach(row => {
         const cols = row.split("\t").map(c => c.trim());
-        const producerName = cols[0] || "";
-        const trackTitle   = cols[1] || "";
-        const trackArtist  = cols[2] || "";
-        const trackUrl     = cols[3] || "";
-        const featured     = (cols[4] || "").toUpperCase() === "TRUE";
+        const producerName  = cols[0] || "";
+        const trackTitle    = cols[1] || "";
+        const trackTitleAlt = cols[2] || "";
+        const trackArtist   = cols[3] || "";
+        const trackArtistAlt = cols[4] || "";
+        const trackUrl      = cols[5] || "";
+        const featured      = (cols[6] || "").toUpperCase() === "TRUE";
         if (!producerName || !trackTitle) return;
         if (!map[producerName]) map[producerName] = [];
-        map[producerName].push({ trackTitle, trackArtist, trackUrl, featured });
+        map[producerName].push({ trackTitle, trackTitleAlt, trackArtist, trackArtistAlt, trackUrl, featured });
       });
       return map;
     } catch {
@@ -572,9 +696,120 @@
     return card;
   }
 
+  function setupSearch(grouped, trackMap) {
+    const searchData = [];
+    CATEGORY_ORDER.forEach(cat => {
+      (grouped[cat] || []).forEach(p => {
+        (trackMap[p.name] || []).forEach(t => {
+          searchData.push({
+            producerName:   p.name,
+            trackTitle:     t.trackTitle,
+            trackTitleAlt:  t.trackTitleAlt  || "",
+            trackArtist:    t.trackArtist    || "",
+            trackArtistAlt: t.trackArtistAlt || "",
+            trackUrl:       t.trackUrl       || ""
+          });
+        });
+      });
+    });
+
+    const input   = document.getElementById("search-input");
+    const closeBtn = document.getElementById("search-close");
+    const results  = document.getElementById("search-results");
+    const overlay  = document.getElementById("search-overlay");
+
+    function closeSearch() {
+      input.value = "";
+      closeBtn.classList.remove("visible");
+      results.classList.remove("active");
+      results.innerHTML = "";
+      overlay.classList.remove("active");
+    }
+
+    function runSearch(raw) {
+      const q = raw.trim().toLowerCase();
+      if (!q) { closeSearch(); return; }
+
+      const matches = searchData.filter(item =>
+        item.producerName.toLowerCase().includes(q)   ||
+        item.trackTitle.toLowerCase().includes(q)     ||
+        item.trackTitleAlt.toLowerCase().includes(q)  ||
+        item.trackArtist.toLowerCase().includes(q)    ||
+        item.trackArtistAlt.toLowerCase().includes(q)
+      );
+
+      results.innerHTML = "";
+      if (matches.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "search-no-results";
+        empty.textContent = "검색 결과가 없습니다. / 検索結果がありません。";
+        results.appendChild(empty);
+      } else {
+        matches.forEach(item => {
+          const row = document.createElement("div");
+          row.className = "search-result-item";
+
+          const prod = document.createElement("span");
+          prod.className = "search-res-producer";
+          prod.textContent = item.producerName;
+          row.appendChild(prod);
+
+          const sep1 = document.createElement("span");
+          sep1.className = "search-res-sep";
+          sep1.textContent = "—";
+          row.appendChild(sep1);
+
+          const track = document.createElement("span");
+          track.className = "search-res-track";
+          if (item.trackUrl) {
+            const a = document.createElement("a");
+            a.href = item.trackUrl;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.textContent = item.trackTitle;
+            track.appendChild(a);
+          } else {
+            track.textContent = item.trackTitle;
+          }
+          row.appendChild(track);
+
+          if (item.trackArtist) {
+            const sep2 = document.createElement("span");
+            sep2.className = "search-res-sep";
+            sep2.textContent = "—";
+            row.appendChild(sep2);
+
+            const artist = document.createElement("span");
+            artist.className = "search-res-artist";
+            artist.textContent = item.trackArtist;
+            row.appendChild(artist);
+          }
+
+          results.appendChild(row);
+        });
+      }
+
+      results.classList.add("active");
+      overlay.classList.add("active");
+      closeBtn.classList.add("visible");
+    }
+
+    input.removeEventListener("input", input._searchHandler);
+    input._searchHandler = () => runSearch(input.value);
+    input.addEventListener("input", input._searchHandler);
+
+    closeBtn.onclick = closeSearch;
+    overlay.onclick  = closeSearch;
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeSearch(); });
+  }
+
   function renderPage(grouped, trackMap) {
     const main = document.querySelector("main");
-    main.innerHTML = "";
+    const loading = document.getElementById("loading");
+    if (loading) loading.remove();
+    main.querySelectorAll(".category-section").forEach(s => s.remove());
+
+    setupSearch(grouped, trackMap);
 
     const sections = [];
 
@@ -653,5 +888,6 @@
   </div>
 </footer>
 
+<div id="search-overlay"></div>
 </body>
 </html>
