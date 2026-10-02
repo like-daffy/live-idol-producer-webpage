@@ -1,0 +1,6 @@
+songId	trackTitle	trackArtist	producerId	producerName	Produce	Mix & Mastering	Vocal Director	Bass	Drum	featured	creditNote	creditSourceUrl
+s0001	夜明けのメロディ	星空アイドル	p001	山田プロデューサー	TRUE	FALSE	FALSE	FALSE	FALSE	TRUE		""
+s0001	夜明けのメロディ	星空アイドル	p003	田中たかし	FALSE	TRUE	FALSE	FALSE	FALSE	FALSE	믹싱·마스터링 참여 예시	""
+s0002	달빛 아래서	루나걸즈	p002	김민준	TRUE	FALSE	TRUE	FALSE	FALSE	TRUE	작곡·편곡·보컬 디렉팅 예시	""
+s0003	地下鉄道	ダークスターズ	p003	田中たかし	TRUE	FALSE	FALSE	TRUE	FALSE	TRUE	작곡·편곡·베이스 연주 예시	""
+s0004	네온 드림	네온드림	p004	이서연	FALSE	FALSE	FALSE	FALSE	TRUE	TRUE	드럼 연주 예시	""

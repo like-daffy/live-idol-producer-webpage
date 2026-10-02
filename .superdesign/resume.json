@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "/": {
+      "targetKind": "existing-ui",
+      "projectId": "0b6a8796-098c-4783-beb6-0cd252db11e4",
+      "baselineDraftId": "3fe1db9c-a6a5-4a30-8fb3-5e2d0b9ff3d3",
+      "activeDraftId": "3fe1db9c-a6a5-4a30-8fb3-5e2d0b9ff3d3",
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "public/index.html:1:549",
+        "public/index.html:640:970",
+        "public/index.html:988:1009",
+        "public/Twitter-X.svg",
+        ".superdesign/directory-preview-data.json"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "c501198641f191d180a7728d70ed955e6f7da1586d5511b55dc5d985a93a4ab7",
+        "public/index.html": "7ce8cb0a5e9ebaf4cfc4729fbecf0c4b02ff2542dbf0797281accfa8acf4f136",
+        "public/Twitter-X.svg": "805986fafa6768a933399cbf58fa64aa9b3398240dccc0b6af2e7cf534dde5cd",
+        ".superdesign/directory-preview-data.json": "244add10b1cb07daefc2bf1002605fbbca5c2eb90544f44bde520e939b8b1508"
+      },
+      "components": [
+        {
+          "name": "DirectoryNavigation",
+          "id": "dc0d8132-5b8a-45d7-b795-032d2a828139",
+          "sourcePath": "public/index.html"
+        },
+        {
+          "name": "DirectoryFooter",
+          "id": "8c72f380-5e5a-46f2-ba04-2d655536e81c",
+          "sourcePath": "public/index.html"
+        }
+      ],
+      "drafts": {
+        "3fe1db9c-a6a5-4a30-8fb3-5e2d0b9ff3d3": {
+          "title": "라이브아이돌 프로듀서 디렉토리 (Light/Dark)",
+          "visualDirection": "Modern white/cyan light and deep charcoal/cyan dark themes, one responsive directory with remembered/system theme preference",
+          "currentVersion": 5,
+          "generationModel": "claude-opus-4-8",
+          "sourceBaselineVersion": 1
+        }
+      },
+      "updatedAt": "2026-10-02T13:40:14.787Z",
+      "baselineVersion": 1,
+      "implementationStatus": "implemented-on-main",
+      "previewUrl": "https://p.superdesign.dev/draft/3fe1db9c-a6a5-4a30-8fb3-5e2d0b9ff3d3",
+      "implementedAt": "2026-10-02T13:40:14.787Z",
+      "implementationDraftVersion": 5,
+      "implementationSourceFingerprint": "156d64f6dd8ccdc88e65a1495f3a990c325ccb6c80280695b2959b246b101894",
+      "implementationValidation": {
+        "themeScenarios": 10,
+        "liveProfiles": 52,
+        "liveSongs": 317,
+        "liveCredits": 351,
+        "htmlCssJavaScriptSyntax": "passed",
+        "browserLayoutReview": "not run; local browser permission declined"
+      }
+    }
+  }
+}
