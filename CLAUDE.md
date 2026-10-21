@@ -4,7 +4,7 @@
 
 Static single-page directory using HTML, CSS, and vanilla JavaScript. Google Sheets TSV feeds load in the browser at runtime; there is no backend or build step.
 
-All webpage work goes in `public/index.html`, with inline CSS and JavaScript. Netlify publishes `public/` via `netlify.toml`.
+All webpage work goes in `public/index.html`, with inline CSS and JavaScript. Firebase Hosting serves `public/` via `firebase.json`.
 
 ## Data and schema
 
@@ -74,6 +74,15 @@ Keep sticky navigation and single-column profile cards. At 1023px and below, use
 
 ## Deployment
 
-Netlify deploys the connected GitHub branch on push. A local code edit alone does not update the deployed HTML. Content edits in published Sheets feeds appear without redeploying.
+Firebase Hosting (classic) serves the site from the separate `live-idol-producer` project at `https://live-idol-producer.web.app/`, the canonical URL used in `index.html`, `robots.txt`, and `sitemap.xml`. Releases are manual: neither a local edit nor a push updates Firebase. Run the tests, preview, check the preview in a browser, then publish that tested version:
+
+```sh
+npx --yes firebase-tools@15.32.1 hosting:channel:deploy <channel> --expires 7d --no-authorized-domains --project live-idol-producer
+npx --yes firebase-tools@15.32.1 hosting:clone live-idol-producer:<channel> live-idol-producer:live --project live-idol-producer
+```
+
+`npx --yes firebase-tools@15.32.1 deploy --only hosting --project live-idol-producer` publishes local files directly. Always name `--project live-idol-producer`; never deploy this configuration to `chord-to-midi`. Roll back from the Hosting release history in the Firebase console. Content edits in published Sheets feeds appear without redeploying.
+
+The Netlify site `live-idol-producer-list` remains connected to `main` only to forward `https://live-idol-producer-list.netlify.app/*` to the same path on Firebase. A push republishes Netlify with the redirect rules in `netlify.toml`, so keep them, including the 200 rule for the Search Console verification file. Do not add a `_redirects` file to `public/`; Firebase would serve it. The migration record and remaining steps are in `docs/transfer-to-firebase.md`.
 
 The original specification in `docs/chika-idol-producer-webpage.md` is historical; the current schema is in `docs/song-credits.md`.
