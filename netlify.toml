@@ -1,2 +1,16 @@
 [build]
   publish = "public"
+
+# Preserve old Search Console file verification while forwarding the site.
+[[redirects]]
+  from = "/google32a9d5bfd74c8735.html"
+  to = "/google32a9d5bfd74c8735.html"
+  status = 200
+  force = true
+
+# The site moved to Firebase Hosting. Keep 302 during the observation period, then 301.
+[[redirects]]
+  from = "https://live-idol-producer-list.netlify.app/*"
+  to = "https://live-idol-producer.web.app/:splat"
+  status = 302
+  force = true
