@@ -1037,6 +1037,14 @@
     return map;
   }
 
+  // The page and the prerender load the same data with the same checks.
+  async function loadDirectory() {
+    const [grouped, trackMap] = await Promise.all([fetchProducers(), fetchTracks()]);
+    const knownIds = new Set(Object.values(grouped).flat().map(p => p.producerId));
+    if (Object.keys(trackMap).some(id => !knownIds.has(id))) throw new Error("Unknown credit producerId");
+    return [grouped, trackMap];
+  }
+
   function xHandle(raw) {
     // strip leading @ or full-width ＠
     return raw.replace(/^[@＠]/, "");
@@ -1064,6 +1072,22 @@
   }
 
   const CHEVRON_SVG = `<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,4 6,8 10,4"/></svg>`;
+
+  // One delegated listener serves prerendered and live cards alike.
+  function setupAccordions(main) {
+    main.addEventListener("click", event => {
+      const btn = event.target.closest(".accordion-btn");
+      if (!btn) return;
+      const extraEl = document.getElementById(btn.getAttribute("aria-controls"));
+      const isOpen = extraEl.classList.toggle("open");
+      btn.classList.toggle("open", isOpen);
+      btn.setAttribute("aria-expanded", String(isOpen));
+      const count = extraEl.querySelectorAll(".card-track").length;
+      btn.innerHTML = isOpen
+        ? `${CHEVRON_SVG}접기`
+        : `${CHEVRON_SVG}더보기 (+${count}곡)`;
+    });
+  }
 
   function buildCreditRoles(roles) {
     const wrap = document.createElement("span");
@@ -1170,14 +1194,6 @@
         btn.setAttribute("aria-expanded", "false");
         btn.setAttribute("aria-controls", extraEl.id);
         btn.innerHTML = `${CHEVRON_SVG}더보기 (+${extra.length}곡)`;
-        btn.addEventListener("click", () => {
-          const isOpen = extraEl.classList.toggle("open");
-          btn.classList.toggle("open", isOpen);
-          btn.setAttribute("aria-expanded", String(isOpen));
-          btn.innerHTML = isOpen
-            ? `${CHEVRON_SVG}접기`
-            : `${CHEVRON_SVG}더보기 (+${extra.length}곡)`;
-        });
         wrap.appendChild(btn);
       } else {
         extra.forEach(t => featuredEl.appendChild(buildTrackRow(t)));
@@ -1389,6 +1405,49 @@
     setupIntersectionObserver(sections, closeSearch);
   }
 
+  // Structured data repeats only what the page shows: the site and the listed profiles.
+  function buildStructuredData(grouped, site) {
+    const profiles = CATEGORY_ORDER.flatMap(cat => grouped[cat] || []);
+    return {
+      "@context": "https://schema.org",
+      "@graph": [
+        { "@type": "WebSite", "@id": `${site.url}#website`, url: site.url, name: site.name, inLanguage: ["ko", "ja"] },
+        {
+          "@type": "CollectionPage",
+          "@id": `${site.url}#page`,
+          url: site.url,
+          name: site.name,
+          isPartOf: { "@id": `${site.url}#website` },
+          mainEntity: {
+            "@type": "ItemList",
+            numberOfItems: profiles.length,
+            itemListElement: profiles.map((p, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: p.name,
+              url: `${site.url}#${encodeURIComponent(`producer-${p.producerId}`)}`
+            }))
+          }
+        }
+      ]
+    };
+  }
+
+  function updateStructuredData(grouped) {
+    const site = {
+      url: document.querySelector('link[rel="canonical"]').href,
+      name: document.querySelector('meta[property="og:site_name"]').content
+    };
+    let script = document.getElementById("directory-ld");
+    if (!script) {
+      script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.id = "directory-ld";
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(buildStructuredData(grouped, site));
+  }
+
   function setupIntersectionObserver(sections, closeSearch) {
     const navLinks = document.querySelectorAll("#gnb-nav a[data-section]");
 
@@ -1415,16 +1474,20 @@
 
   (async () => {
     setupTheme();
+    setupAccordions(document.querySelector("main"));
     try {
-      const [data, trackMap] = await Promise.all([fetchProducers(), fetchTracks()]);
-      const knownIds = new Set(Object.values(data).flat().map(p => p.producerId));
-      if (Object.keys(trackMap).some(id => !knownIds.has(id))) throw new Error("Unknown credit producerId");
-      renderPage(data, trackMap);
+      const [grouped, trackMap] = await loadDirectory();
+      renderPage(grouped, trackMap);
+      updateStructuredData(grouped);
     } catch (err) {
       console.error("Directory data could not be loaded:", err);
+      // A prerendered snapshot stays visible below the error.
       const loading = document.getElementById("loading");
-      if (loading) loading.textContent =
-        "データの読み込みに失敗しました。シートの公開設定と入力内容を確認してください。 / 데이터를 불러오지 못했습니다. 시트의 공개 설정과 입력 내용을 확인하세요.";
+      if (loading) {
+        loading.hidden = false;
+        loading.textContent =
+          "データの読み込みに失敗しました。シートの公開設定と入力内容を確認してください。 / 데이터를 불러오지 못했습니다. 시트의 공개 설정과 입력 내용을 확인하세요.";
+      }
     }
   })();
 </script>

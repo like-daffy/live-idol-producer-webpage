@@ -2,9 +2,9 @@
 
 ## Project
 
-Static single-page directory using HTML, CSS, and vanilla JavaScript. Google Sheets TSV feeds load in the browser at runtime; there is no backend or build step.
+Static single-page directory using HTML, CSS, and vanilla JavaScript. Google Sheets TSV feeds load in the browser at runtime; there is no backend. The one build step, `scripts/prerender.mjs`, writes the cards and their structured data from the feeds into `dist/index.html` so crawlers see them without JavaScript; browsers still load the live feeds and re-render.
 
-All webpage work goes in `public/index.html`, with inline CSS and JavaScript. Firebase Hosting serves `public/` via `firebase.json`.
+All webpage work goes in `public/index.html`, with inline CSS and JavaScript. Firebase Hosting serves `dist/`, which `firebase.json` rebuilds from `public/` before every deploy; never edit `dist/`. The prerender runs the page's own `loadDirectory()`, `renderPage()`, and `buildStructuredData()` on a small DOM shim and replaces the `#loading` placeholder, so keep that line and extend the shim when the rendering code needs more DOM.
 
 ## Data and schema
 
@@ -18,7 +18,7 @@ The live workbook has three active tabs:
 
 The five roles are exactly: `Produce`, `Mix & Mastering`, `Vocal Director`, `Bass`, `Drum`. Produce includes composing and arranging. Lyricist credits are not managed here. Do not infer a person's role on a song from their general profile or services.
 
-Use IDs to join data; display names and titles may change. Read TSV fields by header, including quoted tabs/newlines and CJK text. Every header documented in the schema is required; optional cell values may be blank. Missing columns and broken ID references must surface a loading error instead of silently dropping credits.
+Use IDs to join data; display names and titles may change. Read TSV fields by header, including quoted tabs/newlines and CJK text. Every header documented in the schema is required; optional cell values may be blank. Missing columns and broken ID references must surface a loading error instead of silently dropping credits. The prerender fails the deploy on the same errors; when the live load fails, the prerendered cards stay with the error shown above them.
 
 Keep all three sample files in sync with schema changes:
 
@@ -62,7 +62,7 @@ Sections with no profiles are hidden. Navigation closes search before scrolling 
 - Preserve contact handles including full-width `＠`. Open external links with `noopener noreferrer`.
 - Normalize scheme-less site/song URLs to HTTPS and validate HTTP/HTTPS URLs before rendering links.
 
-Run `node --test tests/directory.test.mjs` for URL, profile search, schema, navigation, and TSV regression checks.
+Run `node --test tests/*.test.mjs` for URL, profile search, schema, navigation, TSV, and prerender regression checks.
 
 ## Language and design
 
@@ -81,7 +81,7 @@ npx --yes firebase-tools@15.32.1 hosting:channel:deploy <channel> --expires 7d -
 npx --yes firebase-tools@15.32.1 hosting:clone live-idol-producer:<channel> live-idol-producer:live --project live-idol-producer
 ```
 
-`npx --yes firebase-tools@15.32.1 deploy --only hosting --project live-idol-producer` publishes local files directly. Always name `--project live-idol-producer`; never deploy this configuration to `chord-to-midi`. Roll back from the Hosting release history in the Firebase console. Content edits in published Sheets feeds appear without redeploying.
+Both deploy commands prerender from the current feeds first. `npx --yes firebase-tools@15.32.1 deploy --only hosting --project live-idol-producer` publishes a fresh prerender directly. Always name `--project live-idol-producer`; never deploy this configuration to `chord-to-midi`. Roll back from the Hosting release history in the Firebase console. Content edits in published Sheets feeds appear in browsers without redeploying; crawlers that do not run JavaScript see them after the next release. Run `node scripts/prerender.mjs` before starting the Hosting emulator.
 
 The Netlify site `live-idol-producer-list` remains connected to `main` only to forward `https://live-idol-producer-list.netlify.app/*` to the same path on Firebase. A push republishes Netlify with the redirect rules in `netlify.toml`, so keep them, including the 200 rule for the Search Console verification file. Keep `public/google32a9d5bfd74c8735.html` as well: it verifies both Search Console properties, and the Change of Address to the new one needs both. Do not add a `_redirects` file to `public/`; Firebase would serve it. The migration record and remaining steps are in `docs/transfer-to-firebase.md`.
 

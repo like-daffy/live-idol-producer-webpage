@@ -1,6 +1,9 @@
 /chika-idol-producer-webpage.md
 .superdesign/tmp/
 
+# Prerendered release output (scripts/prerender.mjs)
+dist/
+
 # Firebase CLI state and logs
 .firebase/
 firebase-debug.log

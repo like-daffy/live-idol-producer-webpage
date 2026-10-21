@@ -116,7 +116,7 @@ Do not introduce a framework, build pipeline, Firebase Auth, Firestore, Cloud Fu
 }
 ```
 
-Publish only `public/`, keeping repository instructions, tests, samples, and tooling outside the served root. No catch-all rewrite is needed: the current page uses section/card anchors, not application pathname routes. Missing paths should return 404. Omit `cleanUrls` so the Google verification file retains its exact `.html` URL. See [Hosting configuration and response precedence](https://firebase.google.com/docs/hosting/full-config).
+Publish only `public/`, keeping repository instructions, tests, samples, and tooling outside the served root. Since 2026-10-22, `hosting.public` is `dist/`, which `scripts/prerender.mjs` builds from `public/` before each deploy (see CLAUDE.md). No catch-all rewrite is needed: the current page uses section/card anchors, not application pathname routes. Missing paths should return 404. Omit `cleanUrls` so the Google verification file retains its exact `.html` URL. See [Hosting configuration and response precedence](https://firebase.google.com/docs/hosting/full-config).
 
 Use conservative cache revalidation initially because assets have stable filenames. Do not copy Chord-to-MIDI's immutable asset rules or CSP: this page has inline scripts/styles and depends on Google Fonts and redirected Sheets requests. Any later CSP requires its own browser validation. These headers also cannot fix CORS restrictions on a response served by Google Sheets.
 
