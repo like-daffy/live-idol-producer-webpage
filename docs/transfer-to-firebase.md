@@ -1,6 +1,6 @@
 # Netlify to Firebase Hosting migration plan
 
-Prepared: 2026-10-21. Status: implemented on 2026-10-21 (UTC). Firebase Hosting serves the directory at `https://live-idol-producer.web.app/`, and the Netlify address forwards there with a permanent 301. The Search Console steps and the observation checks remain; see section 7. No Google Sheet, DNS record, or Netlify dashboard setting was changed.
+Prepared: 2026-10-21. Status: implemented on 2026-10-21 (UTC). Firebase Hosting serves the directory at `https://live-idol-producer.web.app/`, and the Netlify address forwards there with a permanent 301. Search Console has the new property, its sitemap, and a Change of Address; the observation checks remain (section 7). No Google Sheet, DNS record, or Netlify dashboard setting was changed.
 
 Move the existing `public/` directory to **Firebase Hosting (classic)** in a separate Firebase project. Keep Google Sheets as the source of producer, song, and credit data. Reuse the explicit project selection, local checks, and manual deployment workflow from `chord-to-midi-web`.
 
@@ -59,7 +59,7 @@ Old Netlify URL -> HTTP redirect -> canonical URL
 
 | Decision | Recommendation | State |
 | --- | --- | --- |
-| Firebase account | Reuse the account that manages Chord-to-MIDI, after checking CLI access | `sochan@cultureand.tech` with firebase-tools 15.32.1, reauthenticated 2026-10-21 |
+| Firebase account | Reuse the account that manages Chord-to-MIDI, after checking CLI access | The owner's Google account that manages Chord-to-MIDI, with firebase-tools 15.32.1, reauthenticated 2026-10-21 |
 | Firebase project | Separate project for this directory; candidate ID `live-idol-producer` | `live-idol-producer` (number 166929680633), created 2026-10-21 under organization `270947685721`, the same parent as `chord-to-midi` |
 | Hosting site | Use the new project's default Hosting site initially | `live-idol-producer` (default site) |
 | Canonical URL | Use `https://<actual-site-id>.web.app/` initially, unless an owned custom domain is selected before cutover | `https://live-idol-producer.web.app/`; no custom domain |
@@ -341,7 +341,7 @@ Times are UTC on 2026-10-21 unless noted.
 | Firebase live release / version / HTTPS and browser checks | Release `1792594681779000` at 14:58:01, cloned from the preview: version `5e9483cbee1074dd`. `web.app` and `firebaseapp.com` answer 200 over HTTPS without `noindex`; files equal `e38407d`; matrix passed and matched Netlify at the same time (14:58) |
 | Custom-domain DNS and certificate checks, if applicable | Not applicable: no custom domain |
 | Netlify forwarding release / 302 checks / 301 checks | Netlify published `main@e38407d` (the page with the new metadata) as deploy `6ad8d597706812307d08aae3` at 15:09. The 302 release followed as deploy `6ad8d8fae2159cdcafcf0c25` (`main@01f5c5e`) at 15:24. Checks at 15:24: every path answers 302 to the same URL on Firebase, query strings included (also a percent-encoded Korean one). Destinations answer 200 (404 for an unknown path) without another redirect. HTTP answers 301 to HTTPS, then 302. The verification file answers 200 with its content. A browser keeps fragments across the redirect. The deploy permalink of `6abfb81e1e7f0170c9eef137` still serves `c197b0a`. The owner approved the 301 at 16:43, earlier than the suggested 24–48 hour trial, after the live matrix passed again. The 301 release is deploy `6ad8ec4fb7702e110969d15b` (`main@fda6349`), live at 16:46. Checks at 16:46 gave the same results with 301 in place of 302, including HTTP answering 301 to HTTPS and then 301. Netlify sends the redirects with `cache-control: public,max-age=0,must-revalidate` |
-| Search Console verification / sitemap / address change | Pending: needs the owner's Search Console account |
+| Search Console verification / sitemap / address change | Done 2026-10-21 in the Google account that owns the Netlify property (the same account as the Firebase project). The URL-prefix property `https://live-idol-producer.web.app/` verified automatically through the same HTML file. `sitemap.xml` was submitted; its first status was "Couldn't fetch", common for a new property, while the file answers 200 as well-formed XML. Change of Address passed validation (homepage 301, both properties verified) and started. The old property's baseline for Aug 13–Oct 19 was 0 impressions, 0 clicks, and 0 indexed pages; Google had crawled the homepage but not indexed it. A live URL test showed Googlebot smartphone rendering the cards from the feeds |
 | Observation results / ongoing release instructions | Release instructions in [CLAUDE.md](../CLAUDE.md). Next-day and one-week checks pending |
 
 With the 301 in place, repair or roll back at the Firebase destination (Hosting release history) rather than on Netlify; clients that saw the 301 may keep going to Firebase (section 6). Publishing deploy `6ad8d597706812307d08aae3` (the page with the new metadata) or the pre-migration `6abfb81e1e7f0170c9eef137` from Netlify's deploy list would stop the forwarding for other visitors.
@@ -356,7 +356,7 @@ The live checks used a headless browser against each origin: all 58 cards (8/6/2
 ### Remaining steps
 
 1. Check again the next day and after one week: the directory loads at `https://live-idol-producer.web.app/`, old links answer 301 to the same path, and Hosting usage stays within Spark.
-2. In the Search Console account that verified the Netlify property, add the URL-prefix property `https://live-idol-producer.web.app/`. Verify it with the HTML file that Firebase already serves at `/google32a9d5bfd74c8735.html`; if Search Console asks for another file, release that file first. Submit `https://live-idol-producer.web.app/sitemap.xml`, then use Change of Address from the old property where it is supported.
+2. In the new Search Console property, confirm that the sitemap status turns to Success and that the homepage gets crawled. On 2026-11-05, compare impressions, clicks, and indexed pages with the baseline above. Keep `public/google32a9d5bfd74c8735.html`: it verifies both properties, which the Change of Address needs.
 3. Update the owner's published profile links to `https://live-idol-producer.web.app/`.
 4. Keep the Netlify site and hostname while old links depend on them. Every commit on `main` must keep the forwarding rules, because each push republishes Netlify; automatic publishing can stay on. The preview channel expires by itself on 2026-10-28.
 
