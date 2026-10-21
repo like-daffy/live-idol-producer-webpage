@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "live-idol-producer",
+    "production": "live-idol-producer"
+  }
+}

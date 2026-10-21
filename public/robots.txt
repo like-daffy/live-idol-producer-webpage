@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://live-idol-producer-list.netlify.app/sitemap.xml
+Sitemap: https://live-idol-producer.web.app/sitemap.xml

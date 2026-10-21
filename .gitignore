@@ -1,2 +1,10 @@
 /chika-idol-producer-webpage.md
 .superdesign/tmp/
+
+# Firebase CLI state and logs
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Local release evidence: feed snapshots, screenshots, HTTP captures
+.local-checks/
