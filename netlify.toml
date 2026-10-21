@@ -8,9 +8,9 @@
   status = 200
   force = true
 
-# The site moved to Firebase Hosting. Keep 302 during the observation period, then 301.
+# The site moved to Firebase Hosting permanently.
 [[redirects]]
   from = "https://live-idol-producer-list.netlify.app/*"
   to = "https://live-idol-producer.web.app/:splat"
-  status = 302
+  status = 301
   force = true
