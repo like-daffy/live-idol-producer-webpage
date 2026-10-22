@@ -356,7 +356,7 @@ The live checks used a headless browser against each origin: all 58 cards (8/6/2
 ### Remaining steps
 
 1. Check again the next day and after one week: the directory loads at `https://live-idol-producer.web.app/`, old links answer 301 to the same path, and Hosting usage stays within Spark.
-2. In the new Search Console property, confirm that the sitemap status turns to Success and that the homepage gets crawled. On 2026-11-05, compare impressions, clicks, and indexed pages with the baseline above. Keep `public/google32a9d5bfd74c8735.html`: it verifies both properties, which the Change of Address needs.
+2. In the new Search Console property, confirm that the sitemap status turns to Success and that the homepage gets crawled. On 2026-11-05, compare impressions, clicks, and indexed pages with the baseline above. Naver Search Advisor verified the site on 2026-10-22 through the `naver-site-verification` meta tag and has the sitemap; read its collection status and exposure on the same date. Keep `public/google32a9d5bfd74c8735.html`: it verifies both properties, which the Change of Address needs.
 3. Update the owner's published profile links to `https://live-idol-producer.web.app/`.
 4. Keep the Netlify site and hostname while old links depend on them. Every commit on `main` must keep the forwarding rules, because each push republishes Netlify; automatic publishing can stay on. The preview channel expires by itself on 2026-10-28.
 
