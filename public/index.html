@@ -1482,9 +1482,10 @@
       updateStructuredData(grouped);
     } catch (err) {
       console.error("Directory data could not be loaded:", err);
-      // A prerendered snapshot stays visible below the error.
+      // Prerendered cards stay as they are. A failure message above them reads as an
+      // error page (soft 404) to search engines, whose renderers cannot always fetch the feeds.
       const loading = document.getElementById("loading");
-      if (loading) {
+      if (loading && !document.querySelector(".category-section")) {
         loading.hidden = false;
         loading.textContent =
           "データの読み込みに失敗しました。シートの公開設定と入力内容を確認してください。 / 데이터를 불러오지 못했습니다. 시트의 공개 설정과 입력 내용을 확인하세요.";

@@ -18,7 +18,7 @@ The live workbook has three active tabs:
 
 The five roles are exactly: `Produce`, `Mix & Mastering`, `Vocal Director`, `Bass`, `Drum`. Produce includes composing and arranging. Lyricist credits are not managed here. Do not infer a person's role on a song from their general profile or services.
 
-Use IDs to join data; display names and titles may change. Read TSV fields by header, including quoted tabs/newlines and CJK text. Every header documented in the schema is required; optional cell values may be blank. Missing columns and broken ID references must surface a loading error instead of silently dropping credits. The prerender fails the deploy on the same errors; when the live load fails, the prerendered cards stay with the error shown above them.
+Use IDs to join data; display names and titles may change. Read TSV fields by header, including quoted tabs/newlines and CJK text. Every header documented in the schema is required; optional cell values may be blank. Missing columns and broken ID references must surface a loading error instead of silently dropping credits. The prerender fails the deploy on the same errors. When the live load fails, prerendered cards stay as they are and the error goes to the console only: Google's renderer cannot always fetch the feeds, and a page that shows a failure message reads to Google as an error page (soft 404). The visible message remains for a page without prerendered cards.
 
 Keep all three sample files in sync with schema changes:
 
